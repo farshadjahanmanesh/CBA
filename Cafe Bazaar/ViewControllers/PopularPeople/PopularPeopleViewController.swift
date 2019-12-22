@@ -22,6 +22,12 @@ class PopularPeopleViewController: UIViewController {
 		}
 	}
 	@IBOutlet var loadingView: UIActivityIndicatorView!
+	@IBOutlet var searchTextfield: UITextField! {
+		didSet {
+			searchTextfield.delegate = self
+			searchTextfield.returnKeyType = .search
+		}
+	}
 	private func validateViewModel(){
 		guard viewModel != nil else {
 			fatalError("whaat? have you forgot to set the viewModel?")
@@ -34,6 +40,7 @@ class PopularPeopleViewController: UIViewController {
 		getNextPeoples()
 		// Do any additional setup after loading the view.
 	}
+	
 	func bindReactive(){
 		self.viewModel.loading.subscribe {[weak self] (event) in
 			guard let self = self else {return}
@@ -50,28 +57,45 @@ class PopularPeopleViewController: UIViewController {
 		}.disposed(by: disposeBag)
 	}
 	
-	func getNextPeoples(){
+	func getNextPeoples(_ query: String? = nil, reset: Bool = false){
 		if self.viewModel.loading.value {
 			return
 		}
+		
+		var page = self.viewModel.popularPeoplePage + 1
+		if reset {
+			page = 1
+			self.viewModel.popularPeoples.set([])
+		}
 		print("pageeee", self.viewModel.popularPeoplePage)
 		var single: DisposeBag? = DisposeBag()
-		self.viewModel.getPopularPeoples(page: self.viewModel.popularPeoplePage + 1)
-			.subscribe {[unowned self] (event) in
-				guard case let .next(result) = event else {return}
-				switch result {
-				case .success(let peoples):
-					self.viewModel.popularPeoples.set(self.viewModel.popularPeoples.value  + peoples)
-					DispatchQueue.main.async {
-						self.tableView.reloadData()
-					}
-				default:
-					self.viewModel.popularPeoplePage = self.viewModel.popularPeoplePage - 1
+		let subscribe : (Event<Result<[People], RestError>?>)-> Void = {
+			[unowned self] (event) in
+			guard case let .next(result) = event else {return}
+			switch result {
+			case .success(let peoples):
+				self.viewModel.popularPeoples.set(self.viewModel.popularPeoples.value  + peoples)
+				DispatchQueue.main.async {
+					self.tableView.reloadData()
 				}
-				self.viewModel.loading.set(false)
-				single = nil
-				
-		}.disposed(by: single!)
+			default:
+				self.viewModel.popularPeoplePage = page - 1
+			}
+			self.viewModel.loading.set(false)
+			single = nil
+		}
+		
+		if let query = query {
+			self.viewModel
+				.searchPopularPeoples(page: page, query: query)
+				.subscribe(subscribe)
+				.disposed(by: single!)
+		} else {
+			self.viewModel
+				.getPopularPeoples(page: self.viewModel.popularPeoplePage + 1)
+				.subscribe(subscribe)
+				.disposed(by: single!)
+		}
 	}
 }
 
@@ -99,19 +123,17 @@ extension PopularPeopleViewController: UITableViewDataSource, UITableViewDelegat
 	func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
 		let lastRowIndex = tableView.numberOfRows(inSection: 0) - 1
 		guard indexPath.row == lastRowIndex, self.viewModel.loading.value else  {return}
-			let spinner = UIActivityIndicatorView(style: .gray)
-			spinner.startAnimating()
-			spinner.frame = CGRect(x: CGFloat(0), y: CGFloat(0), width: tableView.bounds.width, height: CGFloat(44))
-
-			self.tableView.tableFooterView = spinner
+		let spinner = UIActivityIndicatorView(style: .gray)
+		spinner.startAnimating()
+		spinner.frame = CGRect(x: CGFloat(0), y: CGFloat(0), width: tableView.bounds.width, height: CGFloat(44))
+		
+		self.tableView.tableFooterView = spinner
 	}
 }
 
-extension Result {
-	var success: Success? {
-		guard case let .success(value) = self else {
-			return nil
-		}
-		return value
+extension PopularPeopleViewController: UITextFieldDelegate {
+	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+		self.getNextPeoples(textField.text!, reset: true)
+		return true
 	}
 }

@@ -20,6 +20,23 @@ struct GetPopularPeoplesRequest: Request {
 	}
 }
 
+struct SearchPopularPeoplesRequest: Request {
+	let acceptCache: Bool = false
+	typealias ResultType = [People]
+	
+	let pageNumber: Int
+	let query: String
+	func asURLRequest() throws -> URLRequest {
+		try RequestBuilder
+			.init(path: "search/person")
+			.set(queryItems: [
+				.init(name: "page", value: String(pageNumber)),
+				.init(name: "query", value: query)
+			])
+			.asURLRequest()
+	}
+}
+
 //extension GetPopularPeoplesRequest: Mockable {
 //	var mock: String { """
 //	 {

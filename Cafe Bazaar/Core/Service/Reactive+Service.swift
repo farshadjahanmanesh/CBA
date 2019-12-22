@@ -19,3 +19,12 @@ extension Service {
 		}
 	}
 }
+
+extension Result {
+	var success: Success? {
+		guard case let .success(value) = self else {
+			return nil
+		}
+		return value
+	}
+}

@@ -16,9 +16,15 @@ class PopularPeopleViewModel {
 		self.api = api
 	}
 	
-	func getPopularPeoples(page: Int = 0)->Observable<Result<[People], RestError>?> {
+	func getPopularPeoples(page: Int = 1)->Observable<Result<[People], RestError>?> {
 		popularPeoplePage = page
 		loading.set(true)
 		return api.popularPeoples(page: page)
+	}
+	
+	func searchPopularPeoples(page: Int = 1, query: String)->Observable<Result<[People], RestError>?> {
+		popularPeoplePage = page
+		loading.set(true)
+		return api.searchPeoples(page: page, query: query)
 	}
 }
