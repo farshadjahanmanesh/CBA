@@ -12,5 +12,8 @@ we have two types of data stores to store user's data. Secure and UserDefault wh
 ### Tests
 tests have written.
 
+### Controllers
+there are 4 controllers, `WatchList`, `PopularPeople`, `PeopleDetails` and `MovieDetails`. we can add or remove an actor to our favorites from her details view controller, if an actor is favorited, it has a orange border in popular list and also we can add or remove a movie to our WatchList by using it's details view controller and it will have a green border if it is in our watch list. by navigating to our watchlist controller we can see our favorite movies and by `left swiping` we can remove them from our list.
+
 ### TODO
 i know there are alot of room for improvement and what you are seeing is a 3Day job (because of our release plan i had'nt enough time), some improvements could be in our reactive approach i think.
