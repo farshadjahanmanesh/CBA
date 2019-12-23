@@ -13,7 +13,7 @@ class AppCoordinator: PeopleCordinator {
 	private(set) var navigation: UINavigationController!
 	private let disposeBag = DisposeBag()
 	private var api: Api = DefaultApi()
-	private var dataStore: DataStore = SecureDataStore()
+	private var dataStore: DataStore = UserDefaultStore()
 	init(window: UIWindow) {
 		self.window = window
 		DefaultTokenProvider.init(dataStore: dataStore).token = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2ZWUwYWI5OWY1NjZlODNlZGQxOGRkOWJmMTFlMjQyYSIsInN1YiI6IjVkZjkxYzBkZDFhODkzMDAxOTdlYjNlMSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.h35v-xdwyZie3teLUCT8-VLnqoW1VqbmMe7_vxMT2NM"
