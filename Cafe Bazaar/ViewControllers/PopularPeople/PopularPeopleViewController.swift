@@ -8,11 +8,15 @@
 
 import UIKit
 
-class PopularPeopleViewController: UIViewController {
+extension PersistentManager.Key {
+	static let people: ((Int)->PersistentManager.Key) = {name in PersistentManager.Key.init(rawValue: "favorite_peoples_id_\(name)")}
+}
+
+class PopularPeopleViewController: UIViewController, ViewModelHolder {
 	var viewModel: PopularPeopleViewModel!
 	private let disposeBag = DisposeBag()
 	
-	@IBOutlet var tableView: UITableView! {
+	@IBOutlet private  var tableView: UITableView! {
 		didSet {
 			self.tableView.register(UINib(nibName: "PopularPeopleTableViewCell", bundle: nil), forCellReuseIdentifier: "PopularPeopleTableViewCell")
 			self.tableView.tableFooterView = UIView()
@@ -21,28 +25,31 @@ class PopularPeopleViewController: UIViewController {
 			self.tableView.delegate = self
 		}
 	}
-	@IBOutlet var loadingView: UIActivityIndicatorView!
-	@IBOutlet var searchTextfield: UITextField! {
+	@IBOutlet private var loadingView: UIActivityIndicatorView!
+	@IBOutlet private var searchTextfield: UITextField! {
 		didSet {
 			searchTextfield.delegate = self
 			searchTextfield.returnKeyType = .search
-		}
-	}
-	private func validateViewModel(){
-		guard viewModel != nil else {
-			fatalError("whaat? have you forgot to set the viewModel?")
 		}
 	}
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		validateViewModel()
+		bindReactive()
 		getNextPeoples()
+		styles()
+		
 		// Do any additional setup after loading the view.
 	}
+	private func styles() {
+		self.navigationItem.title = "CBA"
+		 addWatchListButton()
+	}
 	
-	func bindReactive(){
-		self.viewModel.loading.subscribe {[weak self] (event) in
+	private func bindReactive(){
+		self.viewModel.loading
+			.subscribe {[weak self] (event) in
 			guard let self = self else {return}
 			switch event {
 			case .next(let loading):
@@ -57,24 +64,21 @@ class PopularPeopleViewController: UIViewController {
 		}.disposed(by: disposeBag)
 	}
 	
-	func getNextPeoples(_ query: String? = nil, reset: Bool = false){
-		if self.viewModel.loading.value {
-			return
-		}
-		
+	private func getNextPeoples(_ query: String? = nil, reset: Bool = false){
+		guard !self.viewModel.loading.value else {return}
 		var page = self.viewModel.popularPeoplePage + 1
 		if reset {
 			page = 1
 			self.viewModel.popularPeoples.set([])
+			tableView.reloadData()
 		}
-		print("pageeee", self.viewModel.popularPeoplePage)
 		var single: DisposeBag? = DisposeBag()
-		let subscribe : (Event<Result<[People], RestError>?>)-> Void = {
+		let subscribe : (Event<Result<Container<[PopularPeople]>, RestError>?>)-> Void = {
 			[unowned self] (event) in
 			guard case let .next(result) = event else {return}
 			switch result {
 			case .success(let peoples):
-				self.viewModel.popularPeoples.set(self.viewModel.popularPeoples.value  + peoples)
+				self.viewModel.popularPeoples.set(self.viewModel.popularPeoples.value  + peoples.results)
 				DispatchQueue.main.async {
 					self.tableView.reloadData()
 				}
@@ -97,6 +101,20 @@ class PopularPeopleViewController: UIViewController {
 				.disposed(by: single!)
 		}
 	}
+	
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		self.tableView.reloadData()
+	}
+	
+	private func addWatchListButton() {
+		self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "WatchList", style: .plain, target: self, action: #selector(coordinateToWatchList))
+	}
+	
+	@objc
+	func coordinateToWatchList() {
+		self.viewModel.coordinator.coordinateToWatchList()
+	}
 }
 
 extension PopularPeopleViewController: UITableViewDataSource, UITableViewDelegate {
@@ -108,6 +126,11 @@ extension PopularPeopleViewController: UITableViewDataSource, UITableViewDelegat
 		guard let cell = tableView.dequeueReusableCell(withIdentifier: "PopularPeopleTableViewCell") as? PopularPeopleTableViewCell else {return UITableViewCell()}
 		let people = viewModel.popularPeoples.value[indexPath.row]
 		cell.fill(people)
+		cell.dataStore = self.viewModel.store
+		cell.isFavorite = (self.viewModel.store[.people(people.id)] as ID?) != nil
+		cell.selectedMovie = { [weak self] movie in
+			self?.viewModel.coordinator.coordinateToMovieDetails(for: movie)
+		}
 		if indexPath.row == viewModel.popularPeoples.value.count-2 {
 			self.getNextPeoples()
 		}
@@ -129,11 +152,18 @@ extension PopularPeopleViewController: UITableViewDataSource, UITableViewDelegat
 		
 		self.tableView.tableFooterView = spinner
 	}
+	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		let people = viewModel.popularPeoples.value[indexPath.row]
+		viewModel.coordinator.coordinateToPeopleDetails(for: people)
+	}
 }
 
 extension PopularPeopleViewController: UITextFieldDelegate {
 	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
 		self.getNextPeoples(textField.text!, reset: true)
+		self.view.endEditing(true)
 		return true
 	}
 }
+
+

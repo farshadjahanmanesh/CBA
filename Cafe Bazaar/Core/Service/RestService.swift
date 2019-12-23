@@ -8,7 +8,7 @@
 
 import Foundation
 typealias JSON = String
-class RestService<R:Request>: Service {
+class RestService<R:Request> : Service {
 	
 	typealias ResultType = R.ResultType
 	typealias ErrorType = RestError
@@ -19,7 +19,6 @@ class RestService<R:Request>: Service {
 	private let cacher: URLCache
 	private let tokenProvider: TokenProvider
 	private(set) var currentTask: Task? = nil
-	
 	init(session: URLSession = .shared,
 		 decoder:RestDataDecoder = JSONDecoder(),
 		 configuration: URLSessionConfiguration = .default,
@@ -74,7 +73,7 @@ class RestService<R:Request>: Service {
 				}
 				return
 			}
-			guard let model: Container<R.ResultType> = try? self.decoder.decode(Container<R.ResultType>.self, from: data) else {
+			guard let model: R.ResultType = try? self.decoder.decode(R.ResultType.self, from: data) else {
 				if let data = data as? R.ResultType{
 					callback(.success(data), true)
 				} else {
@@ -85,7 +84,7 @@ class RestService<R:Request>: Service {
 			if cache {
 				self.cacher.cachedResponse(for: urlRequest)
 			}
-			callback(.success(model.results), true)
+			callback(.success(model), true)
 		}
 	}
 	

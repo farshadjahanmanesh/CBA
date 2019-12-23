@@ -7,12 +7,17 @@
 //
 
 import Foundation
+
+
+/// api token
 protocol TokenProvider {
 	var token: String? { get }
 }
+
 extension PersistentManager.Key {
 	static let token: PersistentManager.Key = .init(rawValue: "api_token")
 }
+
 final class DefaultTokenProvider: TokenProvider {
 	var dataStore: DataStore
 	init(dataStore: DataStore = SecureDataStore()) {

@@ -24,6 +24,10 @@ class SecureDataStore: DataStore {
 		}
 		return model.value
 	}
+	
+	func remove(for key:  PersistentManager.Key) {
+		keychain.delete(withKey: key.rawValue)
+	}
 }
 
 fileprivate class Keychain {
@@ -80,6 +84,14 @@ fileprivate class Keychain {
         }
         return resultsData
     }
+	
+	func delete(withKey key: String){
+        let query = keychainQuery(withKey: key)
+        query.setValue(kCFBooleanTrue, forKey: kSecReturnData as String)
+        query.setValue(kCFBooleanTrue, forKey: kSecReturnAttributes as String)
+        SecItemDelete(query)
+    }
+    
     
     private func keychainQuery(withKey key: String) -> NSMutableDictionary {
         let result = NSMutableDictionary()

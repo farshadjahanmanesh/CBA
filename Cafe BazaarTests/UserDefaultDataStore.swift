@@ -38,4 +38,13 @@ class UserDefaultDataStoreTest: XCTestCase {
 		let model: TestResultType? = sut![.test4]
 		XCTAssertEqual(model!.family, "subscript")
 	}
+	
+	func testDelete() {
+		sut![.test4] =  TestResultType.init(family: "subscript")
+		let model: TestResultType? = sut![.test4]
+		XCTAssertEqual(model!.family, "subscript")
+		sut!.remove(for: .test4)
+		let deleted: TestResultType? = sut![.test4]
+		XCTAssertNil(deleted)
+	}
 }

@@ -12,8 +12,10 @@ class Observable<Value>: ObservableType  {
 	typealias E = Value
 	private lazy var observers: [AnyObserver<Value>] = {[]}()
 	private var onSubscribe: OnSubscribe? = nil
+	private var lock: NSRecursiveLock = .init()
 	private(set) var value: Value {
 		didSet {
+			lock.lock();defer{lock.unlock()}
 			observers.forEach { (observer) in
 				observer.next(element: .next(value))
 			}
@@ -28,12 +30,9 @@ class Observable<Value>: ObservableType  {
 		self.value = value
 	}
 	
-	init(_ value :@escaping(()->Value)) {
-		self.value = value()
-	}
-	
 	func subscribe<Observer>(observer: Observer) -> Disposable where Observer : ObserverType, Value == Observer.E {
-		defer {self.onSubscribe?()}
+		lock.lock()
+		defer {self.onSubscribe?();lock.unlock()}
 		let anyObserver = AnyObserver(observer)
 		self.observers.append(anyObserver)
 		return anyObserver
@@ -47,7 +46,8 @@ class Observable<Value>: ObservableType  {
 
 extension Observable {
 	func subscribe<O: AnyObserver<Observable.E>>(_ callback: @escaping Callback<Value>) -> Disposable {
-		defer {self.onSubscribe?()}
+		lock.lock()
+		defer {self.onSubscribe?();lock.unlock()}
 		let anyObserver = AnyObserver(Observer.init(callback))
 		self.observers.append(anyObserver)
 		return anyObserver

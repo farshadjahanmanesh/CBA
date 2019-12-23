@@ -23,4 +23,8 @@ class UserDefaultStore: DataStore {
 		}
 		UserDefaults.standard.set(value, forKey: key.rawValue)
 	}
+	
+	func remove(for key:  PersistentManager.Key) {
+		UserDefaults.standard.removeObject(forKey: key.rawValue)
+	}
 }

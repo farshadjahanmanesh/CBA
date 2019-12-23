@@ -71,7 +71,6 @@
                             <constraint firstItem="dhM-xk-UIk" firstAttribute="top" secondItem="q5u-eJ-pz6" secondAttribute="bottom" constant="8" id="KWg-W2-aZg"/>
                             <constraint firstAttribute="trailing" secondItem="fni-2m-7of" secondAttribute="trailing" id="M3x-b5-pnY"/>
                             <constraint firstItem="q5u-eJ-pz6" firstAttribute="top" secondItem="sJi-EX-PrI" secondAttribute="top" constant="8" id="P71-Nf-wGa"/>
-                            <constraint firstItem="fni-2m-7of" firstAttribute="height" secondItem="dhM-xk-UIk" secondAttribute="height" id="TAq-NA-xLj"/>
                             <constraint firstItem="dhM-xk-UIk" firstAttribute="leading" secondItem="sJi-EX-PrI" secondAttribute="leading" id="UPZ-Sv-qna"/>
                             <constraint firstItem="dhM-xk-UIk" firstAttribute="bottom" secondItem="fni-2m-7of" secondAttribute="bottom" id="X4k-ZR-ZVV"/>
                             <constraint firstItem="fni-2m-7of" firstAttribute="leading" secondItem="dhM-xk-UIk" secondAttribute="trailing" constant="8" id="XKi-98-AGG"/>

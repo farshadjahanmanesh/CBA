@@ -7,7 +7,8 @@
 //
 
 import Foundation
-protocol DataStore {
+protocol DataStore: class {
 	func set<Value: Codable>(data: Value, for key:  PersistentManager.Key)
 	func get<Value>(for key:  PersistentManager.Key)->Value? where Value: Codable
+	func remove(for key:  PersistentManager.Key)
 }

@@ -7,17 +7,8 @@
 //
 
 import UIKit
-//class DiskCacher {
-//	let cacher =
-//	let shared = DiskCacher()
-//	private init(){}
-//	func cache(){
-//		cacher.
-//	}
-//
-//}
+// this property have used to indicates if this image's download is finished or not
 private var AssociatedObjectHandle: UInt8 = 0
-
 extension UIImageView {
 	private var urlToLoad:String {
         get {
@@ -27,7 +18,13 @@ extension UIImageView {
             objc_setAssociatedObject(self, &AssociatedObjectHandle, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
-	func fromURL(string: String) {
+	
+	
+	/// load an image from a url(or cache). every image will be cached by system after it download is finished.
+	/// - Parameters:
+	///   - string: url string
+	///   - done: a callback that will call after image is ready
+	func fromURL(string: String, done: ((UIImage?)->Void)? = nil) {
 		self.urlToLoad = string
 		guard let url = URL(string: string) else {
 			return
@@ -50,7 +47,9 @@ extension UIImageView {
 		}
 		
 		DispatchQueue.main.async {[weak self] in
-			self?.image = UIImage(data: cached.data)
+			let image = UIImage(data: cached.data)
+			self?.image = image
+			done?(image)
 		}
 	}
 }

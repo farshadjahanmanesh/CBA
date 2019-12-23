@@ -8,7 +8,7 @@
 
 import Foundation
 
-// MARK: - Welcome
+// MARK: - Container
 struct Container<T>: Decodable where T: Decodable {
     let page, totalResults, totalPages: Int
     let results: T

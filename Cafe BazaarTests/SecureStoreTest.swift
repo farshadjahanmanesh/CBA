@@ -8,7 +8,12 @@
 
 import XCTest
 @testable import Cafe_Bazaar
-
+extension PersistentManager.Key {
+	static let test1 = PersistentManager.Key.init(rawValue: "test1")
+	static let test2 = PersistentManager.Key.init(rawValue: "test2")
+	static let test3 = PersistentManager.Key.init(rawValue: "test3")
+	static let test4 = PersistentManager.Key.init(rawValue: "test4")
+}
 class SecureStoreTest: XCTestCase {
 
     var sut: SecureDataStore?
@@ -37,5 +42,14 @@ class SecureStoreTest: XCTestCase {
 		sut![.test4] =  TestResultType.init(family: "subscript")
 		let model: TestResultType? = sut![.test4]
 		XCTAssertEqual(model!.family, "subscript")
+	}
+	
+	func testDelete() {
+		sut![.test4] =  TestResultType.init(family: "subscript")
+		let model: TestResultType? = sut![.test4]
+		XCTAssertEqual(model!.family, "subscript")
+		sut!.remove(for: .test4)
+		let deleted: TestResultType? = sut![.test4]
+		XCTAssertNil(deleted)
 	}
 }
