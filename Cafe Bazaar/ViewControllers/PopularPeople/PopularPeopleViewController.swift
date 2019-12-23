@@ -144,6 +144,7 @@ extension PopularPeopleViewController: UITableViewDataSource, UITableViewDelegat
 	}
 	
 	func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+		(cell as? PopularPeopleTableViewCell)?.collectionView.reloadData()
 		let lastRowIndex = tableView.numberOfRows(inSection: 0) - 1
 		guard indexPath.row == lastRowIndex, self.viewModel.loading.value else  {return}
 		let spinner = UIActivityIndicatorView(style: .gray)
@@ -152,6 +153,7 @@ extension PopularPeopleViewController: UITableViewDataSource, UITableViewDelegat
 		
 		self.tableView.tableFooterView = spinner
 	}
+	
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		let people = viewModel.popularPeoples.value[indexPath.row]
 		viewModel.coordinator.coordinateToPeopleDetails(for: people)

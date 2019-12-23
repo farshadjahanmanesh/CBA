@@ -57,6 +57,7 @@
 		8769742D23AE91C100F0E81A /* KnownForCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8769742B23AE91C100F0E81A /* KnownForCollectionViewCell.swift */; };
 		8769742E23AE91C100F0E81A /* KnownForCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8769742C23AE91C100F0E81A /* KnownForCollectionViewCell.xib */; };
 		878D744323B045AF0098662F /* WatchListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 878D744223B045AF0098662F /* WatchListViewController.xib */; };
+		878D744623B127110098662F /* ImageView+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878D744523B127110098662F /* ImageView+Ext.swift */; };
 		87A8EEAA23AFF32500B87ACE /* PeopleDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87A8EEA823AFF32500B87ACE /* PeopleDetailsViewController.swift */; };
 		87A8EEAB23AFF32500B87ACE /* PeopleDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 87A8EEA923AFF32500B87ACE /* PeopleDetailsViewController.xib */; };
 		87A8EEAD23AFFB8700B87ACE /* People.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87A8EEAC23AFFB8700B87ACE /* People.swift */; };
@@ -136,6 +137,7 @@
 		8769742B23AE91C100F0E81A /* KnownForCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnownForCollectionViewCell.swift; sourceTree = "<group>"; };
 		8769742C23AE91C100F0E81A /* KnownForCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = KnownForCollectionViewCell.xib; sourceTree = "<group>"; };
 		878D744223B045AF0098662F /* WatchListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WatchListViewController.xib; sourceTree = "<group>"; };
+		878D744523B127110098662F /* ImageView+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageView+Ext.swift"; sourceTree = "<group>"; };
 		87A8EEA823AFF32500B87ACE /* PeopleDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleDetailsViewController.swift; sourceTree = "<group>"; };
 		87A8EEA923AFF32500B87ACE /* PeopleDetailsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PeopleDetailsViewController.xib; sourceTree = "<group>"; };
 		87A8EEAC23AFFB8700B87ACE /* People.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = People.swift; sourceTree = "<group>"; };
@@ -191,6 +193,7 @@
 			children = (
 				8727CD5323AEB0D3002D35E7 /* ImageRequest.swift */,
 				8727CD5123AEAF5A002D35E7 /* ImageCacher.swift */,
+				878D744523B127110098662F /* ImageView+Ext.swift */,
 			);
 			path = ImageCacher;
 			sourceTree = "<group>";
@@ -548,6 +551,7 @@
 				8727CD4823AE9523002D35E7 /* Apis.swift in Sources */,
 				8746E91923A9798200F85A92 /* ObservableType.swift in Sources */,
 				8746E91623A9661400F85A92 /* Observable.swift in Sources */,
+				878D744623B127110098662F /* ImageView+Ext.swift in Sources */,
 				8746E8F923A95BEF00F85A92 /* Service.swift in Sources */,
 				87A8EEAF23B0249F00B87ACE /* PeopleDetailsViewModel.swift in Sources */,
 				8746E90B23A95D3500F85A92 /* Mockable.swift in Sources */,

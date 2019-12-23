@@ -14,12 +14,14 @@ extension PersistentManager.Key {
 
 class PopularPeopleTableViewCell: UITableViewCell, ModelFillable, FavoritePresenetable {
 	typealias Model = PopularPeople
-	
 	fileprivate let collectionCellID = "KnownForCollectionViewCell"
+	
 	private var model: Model!
+	
 	weak var dataStore : DataStore? = nil
 	var selectedMovie: ((KnownFor)->Void)? = nil
-	@IBOutlet private var collectionView: UICollectionView! {
+	
+	@IBOutlet private(set) var collectionView: UICollectionView! {
 		didSet {
 			self.collectionView.register(UINib(nibName: collectionCellID, bundle: nil), forCellWithReuseIdentifier: collectionCellID)
 		}
@@ -43,7 +45,6 @@ class PopularPeopleTableViewCell: UITableViewCell, ModelFillable, FavoritePresen
 		self.model = model
 		self.nameLabel.text = model.name
 		self.posterImage.fromURL(string: model.profileFullPath)
-		self.collectionView.reloadData()
 	}
 	
 	var isFavorite: Bool = false {
